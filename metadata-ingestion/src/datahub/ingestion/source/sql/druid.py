@@ -45,24 +45,28 @@ class DruidConfig(BasicSQLAlchemyConfig):
         default=None,
         description="Bearer token for HTTP authentication. If provided, will be used instead of username/password basic auth.",
     )
+    
+    headers: Dict[str, str] = Field(
+        default_factory=dict,
+        description="Additional HTTP headers to send with requests to Druid.",
+    )
 
     def get_sql_alchemy_url(
         self, uri_opts: Optional[Dict[str, Any]] = None, database: Optional[str] = None
     ) -> str:
-        # If bearer token is provided, set up the authorization header via connect_args
-        if self.bearer_token is not None:
-            # Ensure options dict exists
-            if not hasattr(self, 'options') or self.options is None:
-                self.options = {}
-            
+        # Set up headers if bearer token or custom headers are provided
+        if self.bearer_token is not None or self.headers:
             # Set up connect_args if not already present
             if 'connect_args' not in self.options:
                 self.options['connect_args'] = {}
             
-            # Add the Authorization header with the bearer token
-            self.options['connect_args']['headers'] = {
-                'Authorization': f'Bearer {self.bearer_token.get_secret_value()}'
-            }
+            # Start with custom headers, then add/override with bearer token if provided
+            all_headers = self.headers.copy()
+            if self.bearer_token is not None:
+                all_headers['Authorization'] = f'Bearer {self.bearer_token.get_secret_value()}'
+            
+            # Set headers in connect_args
+            self.options['connect_args']['headers'] = all_headers
         
         base_url = super().get_sql_alchemy_url(uri_opts=uri_opts, database=database)
         return f"{base_url}/druid/v2/sql/"

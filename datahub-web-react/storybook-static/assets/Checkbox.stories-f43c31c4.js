@@ -1,0 +1,27 @@
+import{j as e}from"./jsx-runtime-f961835c.js";import"./index-2b6747da.js";import"./index-f80c8c95.js";import{G as l}from"./IconGalleryWithSearch-117a046e.js";import{a as i,d as r,H as c,e as n}from"./ColorPicker-56dce380.js";import"./iframe-15b9b7fb.js";import"../sb-preview/runtime.js";import"./index-345cee61.js";import"./index-1b441bc2.js";import"./index-33f634d0.js";import"./index-356e4a49.js";import"./index-9b4c0917.js";import"./colors-0c7b34f5.js";import"./Avatar-911d8627.js";import"./styled-components.browser.esm-f891f5b9.js";import"./index-e8e5dbb3.js";import"./extends-34e645d9.js";import"./BarChart-a0f29a42.js";import"./Popover-024376aa.js";import"./index-495e5f6b.js";import"./index-300952f0.js";import"./motion-787a5bbf.js";import"./type-30d10e57.js";import"./reactNode-f7e50cfa.js";import"./utils-8bad284d.js";import"./Axis-806b9145.js";import"./dayjs.min-b50de240.js";import"./BarRounded-86230f55.js";import"./CalendarChart-8737125b.js";import"./Dropdown-4bac02d6.js";import"./RightOutlined-a42d53f0.js";import"./Compact-35a5bcb3.js";import"./button-3a9ea77e.js";import"./LineChart-92e8f08c.js";import"./MatchText-a254fd6b.js";import"./Text-6fe683eb.js";import"./OverflowText-66629e85.js";import"./Pagination-41c73bc4.js";import"./Timeline-7a6a2af7.js";import"./ClickOutside-ccba0f4c.js";import"./WhiskerChart-a4b481de.js";const m=[{label:"Label 1",error:"",isChecked:!1,isDisabled:!1,isIntermediate:!1,isRequired:!1},{label:"Label 2",error:"",isChecked:!1,isDisabled:!1,isIntermediate:!1,isRequired:!1},{label:"Label 3",error:"",isChecked:!1,isDisabled:!1,isIntermediate:!1,isRequired:!1}],ee={title:"Forms / Checkbox",component:i,parameters:{layout:"centered",docs:{subtitle:"A component that is used to get user input in the state of a check box."}},argTypes:{label:{description:"Label for the Checkbox.",table:{defaultValue:{summary:r.label}},control:{type:"text"}},error:{description:"Enforce error state on the Checkbox.",table:{defaultValue:{summary:r.error}},control:{type:"text"}},isChecked:{description:"Whether the Checkbox is checked.",table:{defaultValue:{summary:r?.isChecked?.toString()}},control:{type:"boolean"}},isDisabled:{description:"Whether the Checkbox is in disabled state.",table:{defaultValue:{summary:r?.isDisabled?.toString()}},control:{type:"boolean"}},isIntermediate:{description:"Whether the Checkbox is in intermediate state.",table:{defaultValue:{summary:r?.isIntermediate?.toString()}},control:{type:"boolean"}},isRequired:{description:"Whether the Checkbox is a required field.",table:{defaultValue:{summary:r?.isRequired?.toString()}},control:{type:"boolean"}}},args:{label:r.label,error:r.error,isChecked:r.isChecked,isDisabled:r.isDisabled,isIntermediate:r.isIntermediate,isRequired:r.isRequired}},t={tags:["dev"],render:p=>e.jsx(i,{...p})},s=()=>e.jsxs(l,{children:[e.jsx(i,{label:"Default"}),e.jsx(i,{label:"Checked",isChecked:!0}),e.jsx(i,{label:"Error",isChecked:!0,error:"Error"}),e.jsx(i,{label:"Required",isChecked:!0,isRequired:!0})]}),o=()=>e.jsxs(l,{children:[e.jsx(i,{label:"Primary",isChecked:!0,isIntermediate:!0}),e.jsx(i,{label:"Error",isChecked:!0,isIntermediate:!0,error:"Error"})]}),a=()=>e.jsxs(l,{children:[e.jsx(i,{label:"Default",isDisabled:!0}),e.jsx(i,{label:"Checked",isChecked:!0,isDisabled:!0}),e.jsx(i,{label:"Intermediate",isChecked:!0,isDisabled:!0,isIntermediate:!0})]}),d=()=>e.jsxs(l,{isVertical:!0,children:[e.jsxs("div",{children:[e.jsx(c,{children:"Horizontal Checkbox Group"}),e.jsx(n,{checkboxes:m})]}),e.jsxs("div",{children:[e.jsx(c,{children:"Vertical Checkbox Group"}),e.jsx(n,{isVertical:!0,checkboxes:m})]})]});t.parameters={...t.parameters,docs:{...t.parameters?.docs,source:{originalSource:`{
+  tags: ['dev'],
+  render: props => <Checkbox {...props} />
+}`,...t.parameters?.docs?.source}}};s.parameters={...s.parameters,docs:{...s.parameters?.docs,source:{originalSource:`() => <GridList>
+        <Checkbox label="Default" />
+        <Checkbox label="Checked" isChecked />
+        <Checkbox label="Error" isChecked error="Error" />
+        <Checkbox label="Required" isChecked isRequired />
+    </GridList>`,...s.parameters?.docs?.source}}};o.parameters={...o.parameters,docs:{...o.parameters?.docs,source:{originalSource:`() => {
+  return <GridList>
+            <Checkbox label="Primary" isChecked isIntermediate />
+            <Checkbox label="Error" isChecked isIntermediate error="Error" />
+        </GridList>;
+}`,...o.parameters?.docs?.source}}};a.parameters={...a.parameters,docs:{...a.parameters?.docs,source:{originalSource:`() => <GridList>
+        <Checkbox label="Default" isDisabled />
+        <Checkbox label="Checked" isChecked isDisabled />
+        <Checkbox label="Intermediate" isChecked isDisabled isIntermediate />
+    </GridList>`,...a.parameters?.docs?.source}}};d.parameters={...d.parameters,docs:{...d.parameters?.docs,source:{originalSource:`() => <GridList isVertical>
+        <div>
+            <Heading>Horizontal Checkbox Group</Heading>
+            <CheckboxGroup checkboxes={MOCK_CHECKBOXES} />
+        </div>
+        <div>
+            <Heading>Vertical Checkbox Group</Heading>
+            <CheckboxGroup isVertical checkboxes={MOCK_CHECKBOXES} />
+        </div>
+    </GridList>`,...d.parameters?.docs?.source}}};const re=["sandbox","states","intermediate","disabledStates","checkboxGroups"];export{re as __namedExportsOrder,d as checkboxGroups,ee as default,a as disabledStates,o as intermediate,t as sandbox,s as states};

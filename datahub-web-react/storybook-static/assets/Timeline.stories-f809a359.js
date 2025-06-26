@@ -1,0 +1,6 @@
+import{j as r}from"./jsx-runtime-f961835c.js";import{t as n}from"./index-4d9335bf.js";import{T as o}from"./Timeline-7a6a2af7.js";import"./index-f80c8c95.js";import"./styled-components.browser.esm-f891f5b9.js";import"./index-e8e5dbb3.js";import"./index-9b4c0917.js";import"./colors-0c7b34f5.js";import"./extends-34e645d9.js";import"./index-495e5f6b.js";import"./index-345cee61.js";import"./reactNode-f7e50cfa.js";const g={title:"Components / Timeline",component:o,parameters:{layout:"centered",badges:[n.EXPERIMENTAL],docs:{subtitle:"Vertical display timeline."}},argTypes:{items:{description:"A list of items to render in the timeline"},renderContent:{description:"A function to render a content of the timeline's item"},renderDot:{description:"A function to render a dot of the timeline's item"}},args:{items:[{key:"1"},{key:"2"},{key:"3"}],renderContent:e=>`Content for item ${e.key}`,renderDot:e=>{if(e.key==="2")return r.jsx("div",{style:{width:"10px",height:"10px",background:"red"}})}}},t={tags:["dev"],render:e=>r.jsx(o,{...e})};t.parameters={...t.parameters,docs:{...t.parameters?.docs,source:{originalSource:`{
+  tags: ['dev'],
+  render: props => {
+    return <Timeline {...props} />;
+  }
+}`,...t.parameters?.docs?.source}}};const h=["sandbox"];export{h as __namedExportsOrder,g as default,t as sandbox};

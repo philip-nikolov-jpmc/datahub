@@ -16,6 +16,7 @@ import CustomThemeProvider from '@src/CustomThemeProvider';
 import { GlobalCfg } from '@src/conf';
 import { useCustomTheme } from '@src/customThemeContext';
 import possibleTypesResult from '@src/possibleTypes.generated';
+import { GlobalErrorBoundary } from '@src/GlobalErrorBoundary';
 
 /*
     Construct Apollo Client
@@ -95,7 +96,9 @@ export const InnerApp: React.VFC = () => {
 export const App: React.VFC = () => {
     return (
         <ApolloProvider client={client}>
-            <InnerApp />
+            <GlobalErrorBoundary>
+                <InnerApp />
+            </GlobalErrorBoundary>
         </ApolloProvider>
     );
 };

@@ -1,0 +1,6 @@
+import{j as o}from"./jsx-runtime-f961835c.js";import{t as s}from"./index-4d9335bf.js";import{C as t}from"./ClickOutside-ccba0f4c.js";import"./index-f80c8c95.js";import"./styled-components.browser.esm-f891f5b9.js";import"./index-e8e5dbb3.js";const p={title:"Utils / ClickOutside",component:t,parameters:{layout:"centered",badges:[s.STABLE,"readyForDesignReview"],docs:{subtitle:"This component allows to add autocompletion"}},argTypes:{onClickOutside:{description:"Called on clicking outside"},ignoreSelector:{description:"Optional CSS-selector to ignore handling of clicks as outside clicks"},outsideSelector:{description:"Optional CSS-selector to cosider clicked element as outside click"},ignoreWrapper:{description:"Enable to ignore clicking outside of wrapper"}},args:{onClickOutside:()=>console.log("Clicked outside")}},e={tags:["dev"],render:i=>o.jsx(t,{...i,children:o.jsx("button",{type:"button",children:"Button"})})};e.parameters={...e.parameters,docs:{...e.parameters?.docs,source:{originalSource:`{
+  tags: ['dev'],
+  render: props => <ClickOutside {...props}>
+            <button type="button">Button</button>
+        </ClickOutside>
+}`,...e.parameters?.docs?.source}}};const u=["sandbox"];export{u as __namedExportsOrder,p as default,e as sandbox};

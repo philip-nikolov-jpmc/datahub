@@ -1,0 +1,19 @@
+import{j as o}from"./jsx-runtime-f961835c.js";import{t as u}from"./index-4d9335bf.js";import"./index-2b6747da.js";import"./index-f80c8c95.js";import{G as i}from"./IconGalleryWithSearch-117a046e.js";import{o as c,B as t,b as r}from"./ColorPicker-56dce380.js";import m from"./Pill.stories-ba124f15.js";import"./iframe-15b9b7fb.js";import"../sb-preview/runtime.js";import"./index-345cee61.js";import"./index-1b441bc2.js";import"./index-33f634d0.js";import"./index-356e4a49.js";import"./index-9b4c0917.js";import"./colors-0c7b34f5.js";import"./Avatar-911d8627.js";import"./styled-components.browser.esm-f891f5b9.js";import"./index-e8e5dbb3.js";import"./extends-34e645d9.js";import"./BarChart-a0f29a42.js";import"./Popover-024376aa.js";import"./index-495e5f6b.js";import"./index-300952f0.js";import"./motion-787a5bbf.js";import"./type-30d10e57.js";import"./reactNode-f7e50cfa.js";import"./utils-8bad284d.js";import"./Axis-806b9145.js";import"./dayjs.min-b50de240.js";import"./BarRounded-86230f55.js";import"./CalendarChart-8737125b.js";import"./Dropdown-4bac02d6.js";import"./RightOutlined-a42d53f0.js";import"./Compact-35a5bcb3.js";import"./button-3a9ea77e.js";import"./LineChart-92e8f08c.js";import"./MatchText-a254fd6b.js";import"./Text-6fe683eb.js";import"./OverflowText-66629e85.js";import"./Pagination-41c73bc4.js";import"./Timeline-7a6a2af7.js";import"./ClickOutside-ccba0f4c.js";import"./WhiskerChart-a4b481de.js";import"./constants-15fcc1a3.js";const d=c(m.argTypes,["label"]),l=c(m.args,["label"]),so={title:"Components / Badge",component:t,parameters:{layout:"centered",badges:[u.EXPERIMENTAL],docs:{subtitle:"A component that is used to get badge"}},argTypes:{count:{description:"Count to show.",table:{defaultValue:{summary:`${r.count}`}},control:{type:"number"}},overflowCount:{description:"Max count to show.",table:{defaultValue:{summary:`${r.overflowCount}`}},control:{type:"number"}},showZero:{description:"Whether to show badge when `count` is zero.",table:{defaultValue:{summary:`${r.showZero}`}},control:{type:"boolean"}},...d},args:{count:100,overflowCount:r.overflowCount,showZero:r.showZero,...l}},e={tags:["dev"],render:p=>o.jsx(t,{...p})},s=()=>o.jsxs(i,{children:[o.jsx(t,{count:100}),o.jsx(t,{count:100,size:"sm"}),o.jsx(t,{count:100,size:"lg"})]}),n=()=>o.jsxs(i,{children:[o.jsx(t,{count:100}),o.jsx(t,{count:100,color:"violet"}),o.jsx(t,{count:100,color:"green"}),o.jsx(t,{count:100,color:"red"}),o.jsx(t,{count:100,color:"blue"}),o.jsx(t,{count:100,color:"gray"})]}),a=()=>o.jsxs(i,{children:[o.jsx(t,{count:100,leftIcon:"AutoMode"}),o.jsx(t,{count:100,rightIcon:"Close"}),o.jsx(t,{count:100,leftIcon:"AutoMode",rightIcon:"Close"})]});e.parameters={...e.parameters,docs:{...e.parameters?.docs,source:{originalSource:`{
+  tags: ['dev'],
+  render: props => <Badge {...props} />
+}`,...e.parameters?.docs?.source}}};s.parameters={...s.parameters,docs:{...s.parameters?.docs,source:{originalSource:`() => <GridList>
+        <Badge count={100} />
+        <Badge count={100} size="sm" />
+        <Badge count={100} size="lg" />
+    </GridList>`,...s.parameters?.docs?.source}}};n.parameters={...n.parameters,docs:{...n.parameters?.docs,source:{originalSource:`() => <GridList>
+        <Badge count={100} />
+        <Badge count={100} color="violet" />
+        <Badge count={100} color="green" />
+        <Badge count={100} color="red" />
+        <Badge count={100} color="blue" />
+        <Badge count={100} color="gray" />
+    </GridList>`,...n.parameters?.docs?.source}}};a.parameters={...a.parameters,docs:{...a.parameters?.docs,source:{originalSource:`() => <GridList>
+        <Badge count={100} leftIcon="AutoMode" />
+        <Badge count={100} rightIcon="Close" />
+        <Badge count={100} leftIcon="AutoMode" rightIcon="Close" />
+    </GridList>`,...a.parameters?.docs?.source}}};const no=["sandbox","sizes","colors","withIcon"];export{no as __namedExportsOrder,n as colors,so as default,e as sandbox,s as sizes,a as withIcon};

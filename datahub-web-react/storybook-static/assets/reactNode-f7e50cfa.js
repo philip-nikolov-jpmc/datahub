@@ -1,0 +1,1 @@
+import{r as e}from"./index-f80c8c95.js";var a=e.isValidElement;function s(n){return n&&a(n)&&n.type===e.Fragment}function i(n,r,t){return a(n)?e.cloneElement(n,typeof t=="function"?t(n.props||{}):t):r}function u(n,r){return i(n,n,r)}export{a,u as c,s as i,i as r};

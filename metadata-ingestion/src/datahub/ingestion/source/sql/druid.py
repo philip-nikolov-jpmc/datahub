@@ -56,17 +56,14 @@ class DruidConfig(BasicSQLAlchemyConfig):
     ) -> str:
         # Set up headers if bearer token or custom headers are provided
         if self.bearer_token is not None or self.headers:
-            # Set up connect_args if not already present
-            if 'connect_args' not in self.options:
-                self.options['connect_args'] = {}
+            connect_args = self.options.setdefault('connect_args', {})
             
             # Start with custom headers, then add/override with bearer token if provided
             all_headers = self.headers.copy()
             if self.bearer_token is not None:
                 all_headers['Authorization'] = f'Bearer {self.bearer_token.get_secret_value()}'
             
-            # Set headers in connect_args
-            self.options['connect_args']['headers'] = all_headers
+            connect_args['headers'] = all_headers
         
         base_url = super().get_sql_alchemy_url(uri_opts=uri_opts, database=database)
         return f"{base_url}/druid/v2/sql/"

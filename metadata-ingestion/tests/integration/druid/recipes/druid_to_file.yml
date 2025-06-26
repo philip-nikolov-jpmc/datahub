@@ -3,8 +3,7 @@ source:
   config:
     host_port: "localhost:8082"
     platform_instance: "my_druid"
-    username: druid
-    password: FoolishPassword
+    bearer_token: "test-bearer-token-123"
 sink:
   type: file
   config:

@@ -1,5 +1,6 @@
 import logging
 from typing import Dict, Iterable, List, Optional
+from enum import Enum
 
 from pydantic import Field, SecretStr, validator
 
@@ -37,6 +38,11 @@ from datahub.ingestion.source.state.stateful_ingestion_base import (
 logger: logging.Logger = logging.getLogger(__name__)
 
 
+class GCSAuthType(str, Enum):
+    HMAC = "hmac"
+    WORKLOAD_IDENTITY_FEDERATION = "workload_identity_federation"
+
+
 class HMACKey(ConfigModel):
     hmac_access_id: str = Field(description="Access ID")
     hmac_access_secret: SecretStr = Field(description="Secret")
@@ -45,8 +51,19 @@ class HMACKey(ConfigModel):
 class GCSSourceConfig(
     StatefulIngestionConfigBase, DatasetSourceConfigMixin, PathSpecsConfigMixin
 ):
-    credential: HMACKey = Field(
-        description="Google cloud storage [HMAC keys](https://cloud.google.com/storage/docs/authentication/hmackeys)",
+    auth_type: GCSAuthType = Field(
+        default=GCSAuthType.HMAC,
+        description="Authentication type to use. Defaults to HMAC keys. Set to 'workload_identity_federation' to use Workload Identity Federation.",
+    )
+
+    credential: Optional[HMACKey] = Field(
+        default=None,
+        description="Google cloud storage [HMAC keys](https://cloud.google.com/storage/docs/authentication/hmackeys). Required when auth_type is 'hmac'.",
+    )
+
+    gcp_wif_configuration: Optional[str] = Field(
+        default=None,
+        description="Path to the Google Cloud Workload Identity Federation configuration JSON file. Required when auth_type is 'workload_identity_federation'.",
     )
 
     max_rows: int = Field(
@@ -60,6 +77,20 @@ class GCSSourceConfig(
     )
 
     stateful_ingestion: Optional[StatefulStaleMetadataRemovalConfig] = None
+
+    @validator("credential", always=True)
+    def validate_credential(cls, v, values):
+        auth_type = values.get("auth_type", GCSAuthType.HMAC)
+        if auth_type == GCSAuthType.HMAC and v is None:
+            raise ValueError("credential is required when auth_type is 'hmac'")
+        return v
+
+    @validator("gcp_wif_configuration", always=True)
+    def validate_gcp_wif_configuration(cls, v, values):
+        auth_type = values.get("auth_type", GCSAuthType.HMAC)
+        if auth_type == GCSAuthType.WORKLOAD_IDENTITY_FEDERATION and v is None:
+            raise ValueError("gcp_wif_configuration is required when auth_type is 'workload_identity_federation'")
+        return v
 
     @validator("path_specs", always=True)
     def check_path_specs_and_infer_platform(
@@ -101,18 +132,43 @@ class GCSSource(StatefulIngestionSourceBase):
     def create_equivalent_s3_config(self):
         s3_path_specs = self.create_equivalent_s3_path_specs()
 
-        s3_config = DataLakeSourceConfig(
-            path_specs=s3_path_specs,
-            aws_config=AwsConnectionConfig(
-                aws_endpoint_url="https://storage.googleapis.com",
-                aws_access_key_id=self.config.credential.hmac_access_id,
-                aws_secret_access_key=self.config.credential.hmac_access_secret.get_secret_value(),
-                aws_region="auto",
-            ),
-            env=self.config.env,
-            max_rows=self.config.max_rows,
-            number_of_files_to_sample=self.config.number_of_files_to_sample,
-        )
+        if self.config.auth_type == GCSAuthType.HMAC:
+            if not self.config.credential:
+                raise ValueError("HMAC credentials are required when auth_type is 'hmac'")
+            
+            s3_config = DataLakeSourceConfig(
+                path_specs=s3_path_specs,
+                aws_config=AwsConnectionConfig(
+                    aws_endpoint_url="https://storage.googleapis.com",
+                    aws_access_key_id=self.config.credential.hmac_access_id,
+                    aws_secret_access_key=self.config.credential.hmac_access_secret.get_secret_value(),
+                    aws_region="auto",
+                ),
+                env=self.config.env,
+                max_rows=self.config.max_rows,
+                number_of_files_to_sample=self.config.number_of_files_to_sample,
+            )
+        else:  # workload_identity_federation
+            if not self.config.gcp_wif_configuration:
+                raise ValueError("gcp_wif_configuration is required when auth_type is 'workload_identity_federation'")
+            
+            # For workload identity federation, we don't use HMAC credentials
+            # The authentication will be handled by the Google Cloud client libraries
+            # using the GOOGLE_APPLICATION_CREDENTIALS environment variable
+            import os
+            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = self.config.gcp_wif_configuration
+            
+            s3_config = DataLakeSourceConfig(
+                path_specs=s3_path_specs,
+                aws_config=AwsConnectionConfig(
+                    aws_endpoint_url="https://storage.googleapis.com",
+                    aws_region="auto",
+                ),
+                env=self.config.env,
+                max_rows=self.config.max_rows,
+                number_of_files_to_sample=self.config.number_of_files_to_sample,
+            )
+            
         return s3_config
 
     def create_equivalent_s3_path_specs(self):

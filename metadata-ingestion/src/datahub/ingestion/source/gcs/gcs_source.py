@@ -74,6 +74,11 @@ class GCSSourceConfig(
         description="Google Cloud Workload Identity Federation configuration as JSON string or dict. Alternative to gcp_wif_configuration file path. Required when auth_type is 'workload_identity_federation' and gcp_wif_configuration is not provided.",
     )
 
+    gcp_wif_configuration_json_string: Optional[str] = Field(
+        default=None,
+        description="Google Cloud Workload Identity Federation configuration as a JSON string (contents of the configuration file). Useful for copying configuration from files into secrets. Alternative to gcp_wif_configuration file path. Required when auth_type is 'workload_identity_federation' and other gcp_wif_configuration options are not provided.",
+    )
+
     max_rows: int = Field(
         default=100,
         description="Maximum number of rows to use when inferring schemas for TSV and CSV files.",
@@ -93,32 +98,42 @@ class GCSSourceConfig(
             raise ValueError("credential is required when auth_type is 'hmac'")
         return v
 
-    @validator("gcp_wif_configuration_json", always=True)
+    @validator("gcp_wif_configuration_json_string", always=True)
     def validate_gcp_wif_configuration_options(cls, v, values):
         auth_type = values.get("auth_type", GCSAuthType.HMAC)
         gcp_wif_configuration = values.get("gcp_wif_configuration")
+        gcp_wif_configuration_json = values.get("gcp_wif_configuration_json")
         
         if auth_type == GCSAuthType.WORKLOAD_IDENTITY_FEDERATION:
-            if not gcp_wif_configuration and not v:
+            wif_options = [gcp_wif_configuration, gcp_wif_configuration_json, v]
+            provided_options = [opt for opt in wif_options if opt is not None]
+            
+            if len(provided_options) == 0:
                 raise ValueError(
-                    "Either gcp_wif_configuration (file path) or gcp_wif_configuration_json (JSON content) "
-                    "is required when auth_type is 'workload_identity_federation'"
+                    "One of gcp_wif_configuration (file path), gcp_wif_configuration_json (JSON content), "
+                    "or gcp_wif_configuration_json_string (JSON string) is required when auth_type is 'workload_identity_federation'"
                 )
-            if gcp_wif_configuration and v:
+            elif len(provided_options) > 1:
                 raise ValueError(
-                    "Cannot specify both gcp_wif_configuration and gcp_wif_configuration_json. "
-                    "Use either the file path or the JSON content, not both."
+                    "Cannot specify multiple WIF configuration options. Use only one of: "
+                    "gcp_wif_configuration, gcp_wif_configuration_json, or gcp_wif_configuration_json_string."
                 )
         
-        # Validate JSON format if provided as string, or ensure it's a dict
-        if v:
-            if isinstance(v, str):
+        # Validate JSON format for both JSON options
+        if gcp_wif_configuration_json:
+            if isinstance(gcp_wif_configuration_json, str):
                 try:
-                    json.loads(v)
+                    json.loads(gcp_wif_configuration_json)
                 except json.JSONDecodeError as e:
                     raise ValueError(f"gcp_wif_configuration_json must be valid JSON: {e}")
-            elif not isinstance(v, dict):
+            elif not isinstance(gcp_wif_configuration_json, dict):
                 raise ValueError("gcp_wif_configuration_json must be either a JSON string or a dictionary")
+        
+        if v:
+            try:
+                json.loads(v)
+            except json.JSONDecodeError as e:
+                raise ValueError(f"gcp_wif_configuration_json_string must be valid JSON: {e}")
         
         return v
 
@@ -166,15 +181,20 @@ class GCSSource(StatefulIngestionSourceBase):
             # Use the provided file path directly
             os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = self.config.gcp_wif_configuration
             logger.info("Using Workload Identity Federation configuration from file: %s", self.config.gcp_wif_configuration)
-        elif self.config.gcp_wif_configuration_json:
+        elif self.config.gcp_wif_configuration_json or self.config.gcp_wif_configuration_json_string:
             # Create a temporary file to hold the JSON content
             try:
                 with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json') as temp_file:
-                    if isinstance(self.config.gcp_wif_configuration_json, dict):
-                        json.dump(self.config.gcp_wif_configuration_json, temp_file, indent=2)
-                    else:
-                        # It's already a JSON string (validated in the validator)
-                        temp_file.write(self.config.gcp_wif_configuration_json)
+                    if self.config.gcp_wif_configuration_json:
+                        if isinstance(self.config.gcp_wif_configuration_json, dict):
+                            json.dump(self.config.gcp_wif_configuration_json, temp_file, indent=2)
+                        else:
+                            # It's already a JSON string (validated in the validator)
+                            temp_file.write(self.config.gcp_wif_configuration_json)
+                    elif self.config.gcp_wif_configuration_json_string:
+                        # Write the JSON string directly (validated in the validator)
+                        temp_file.write(self.config.gcp_wif_configuration_json_string)
+                    
                     temp_file.flush()
                     self._temp_wif_file_path = temp_file.name
                     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = self._temp_wif_file_path
@@ -213,8 +233,13 @@ class GCSSource(StatefulIngestionSourceBase):
                 number_of_files_to_sample=self.config.number_of_files_to_sample,
             )
         else:  # workload_identity_federation
-            if not self.config.gcp_wif_configuration and not self.config.gcp_wif_configuration_json:
-                raise ValueError("gcp_wif_configuration or gcp_wif_configuration_json is required when auth_type is 'workload_identity_federation'")
+            wif_options = [
+                self.config.gcp_wif_configuration, 
+                self.config.gcp_wif_configuration_json, 
+                self.config.gcp_wif_configuration_json_string
+            ]
+            if not any(wif_options):
+                raise ValueError("One of gcp_wif_configuration, gcp_wif_configuration_json, or gcp_wif_configuration_json_string is required when auth_type is 'workload_identity_federation'")
             
             # For workload identity federation, we don't use HMAC credentials
             # The authentication will be handled by the Google Cloud client libraries

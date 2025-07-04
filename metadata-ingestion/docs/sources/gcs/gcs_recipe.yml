@@ -21,7 +21,7 @@ source:
 
 ---
 
-# Workload Identity Federation with inline configuration
+# Workload Identity Federation with inline configuration (dict)
 source:
   type: gcs
   config:
@@ -34,5 +34,26 @@ source:
       credential_source:
         file: "/var/run/secrets/tokens/gcp-ksa/token"
       service_account_impersonation_url: "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/SERVICE_ACCOUNT_EMAIL:generateAccessToken"
+    path_specs: 
+       - include: gs://gcs-ingestion-bucket/parquet_example/{table}/year={partition[0]}/*.parquet
+
+---
+
+# Workload Identity Federation with JSON string (copy-paste from file)
+source:
+  type: gcs
+  config:
+    auth_type: workload_identity_federation
+    gcp_wif_configuration_json_string: |
+      {
+        "type": "external_account",
+        "audience": "//iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/providers/PROVIDER_ID",
+        "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
+        "token_url": "https://sts.googleapis.com/v1/token",
+        "credential_source": {
+          "file": "/var/run/secrets/tokens/gcp-ksa/token"
+        },
+        "service_account_impersonation_url": "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/SERVICE_ACCOUNT_EMAIL:generateAccessToken"
+      }
     path_specs: 
        - include: gs://gcs-ingestion-bucket/parquet_example/{table}/year={partition[0]}/*.parquet

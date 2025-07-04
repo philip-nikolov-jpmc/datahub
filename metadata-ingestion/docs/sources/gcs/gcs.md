@@ -20,7 +20,7 @@ source:
 
 #### Workload Identity Federation
 
-Configure Workload Identity Federation using either a configuration file path or inline configuration:
+Configure Workload Identity Federation using one of three options:
 
 **Option 1: Configuration file**
 ```yaml
@@ -31,7 +31,7 @@ source:
     gcp_wif_configuration: "/path/to/gcp_wif_configuration.json"
 ```
 
-**Option 2: Inline configuration**
+**Option 2: Inline configuration (dict)**
 ```yaml
 source:
   type: gcs
@@ -44,6 +44,24 @@ source:
       token_url: "https://sts.googleapis.com/v1/token"
       credential_source:
         file: "/var/run/secrets/tokens/gcp-ksa/token"
+```
+
+**Option 3: JSON string (copy-paste from file)**
+```yaml
+source:
+  type: gcs
+  config:
+    auth_type: workload_identity_federation
+    gcp_wif_configuration_json_string: |
+      {
+        "type": "external_account",
+        "audience": "//iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/providers/PROVIDER_ID",
+        "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
+        "token_url": "https://sts.googleapis.com/v1/token",
+        "credential_source": {
+          "file": "/var/run/secrets/tokens/gcp-ksa/token"
+        }
+      }
 ```
 
 For Workload Identity Federation setup, see the [Google Cloud documentation](https://cloud.google.com/iam/docs/workload-identity-federation).

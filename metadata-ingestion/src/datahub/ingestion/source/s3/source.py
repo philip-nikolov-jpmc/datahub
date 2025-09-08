@@ -881,6 +881,12 @@ class S3Source(StatefulIngestionSourceBase):
         if folder.startswith("/"):
             folder = folder.removeprefix("/")
 
+        path_slash = f"{protocol}{bucket_name}/{folder}".count("/")
+        glob_slash = path_spec.glob_include.count("/")
+        if path_slash == glob_slash and not path_spec.glob_include.endswith("**"):
+            # no need to list sub-folders, we're at the end of the include
+            return [f"{protocol}{bucket_name}/{folder}"]
+
         iterator = list_folders(
             bucket_name=bucket_name,
             prefix=folder,

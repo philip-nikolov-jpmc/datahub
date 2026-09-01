@@ -1,6 +1,7 @@
 # Micro-Frontends in DataHub
 
 DataHub now supports hosting micro-frontends (MFEs), which can be easily configured via YAML files. Each MFE must expose a `remoteEntry.js` file using [Module Federation](https://webpack.js.org/concepts/module-federation/).
+Note: Vite with module federation plugin has not been tested and is not supported yet.
 
 > **Note:** Exporting your `<App/>` component is not sufficient.  
 > You must export a `mount` function that accepts a DOM element and renders your app inside it.  
